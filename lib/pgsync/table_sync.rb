@@ -176,7 +176,6 @@ module PgSync
     def quoted_dest_table(table)
       mapping = destination.schema_mapping
       mapped_table = Table.new(mapping[table.schema] || table.schema, table.name)
-      puts "ALTER TABLE #{quote_ident_full(mapped_table)}"
       quote_ident_full(mapped_table)
     end
 
