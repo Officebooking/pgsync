@@ -165,7 +165,12 @@ module PgSync
         else
           destination.truncate(table)
         end
-        copy(copy_to_command, dest_table: table, dest_fields: fields)
+        mapping = destination.schema_mapping
+        dest_table = Table.new(
+          mapping[table.schema] || table.schema,
+          table.name
+        )
+        copy(copy_to_command, dest_table: dest_table, dest_fields: fields)
       end
 
       # update sequences
