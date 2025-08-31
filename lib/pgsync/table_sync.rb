@@ -173,6 +173,13 @@ module PgSync
       end.to_h
     end
 
+    def quoted_dest_table(table)
+      mapping = destination.schema_mapping
+      mapped_table = Table.new(mapping[table.schema] || table.schema, table.name)
+      puts "ALTER TABLE #{quote_ident_full(mapped_table)}"
+      quote_ident_full(mapped_table)
+    end
+
     def run_tasks(tasks, &block)
       notices = []
       failed_tables = []
@@ -280,7 +287,7 @@ module PgSync
             table_constraints = non_deferrable_constraints(destination)
             table_constraints.each do |table, constraints|
               constraints.each do |constraint|
-                destination.execute("ALTER TABLE #{quote_ident_full(table)} ALTER CONSTRAINT #{quote_ident(constraint)} DEFERRABLE")
+                destination.execute("ALTER TABLE #{quoted_dest_table(table)} ALTER CONSTRAINT #{quote_ident(constraint)} DEFERRABLE")
               end
             end
           end
@@ -302,7 +309,7 @@ module PgSync
 
             table_constraints.each do |table, constraints|
               constraints.each do |constraint|
-                destination.execute("ALTER TABLE #{quote_ident_full(table)} ALTER CONSTRAINT #{quote_ident(constraint)} NOT DEFERRABLE")
+                destination.execute("ALTER TABLE #{quoted_dest_table(table)} ALTER CONSTRAINT #{quote_ident(constraint)} NOT DEFERRABLE")
               end
             end
           end

@@ -220,7 +220,7 @@ module PgSync
     end
 
     def copy(source_command, dest_table:, dest_fields:)
-      destination_command = "COPY #{quote_ident_full(dest_table)} (#{dest_fields}) FROM STDIN"
+      destination_command = "COPY #{quoted_dest_table} (#{dest_fields}) FROM STDIN"
 
       source.log_sql(source_command)
       destination.log_sql(destination_command)
